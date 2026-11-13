@@ -1,0 +1,18 @@
+[project]
+name = "briefing-log-mcp"
+version = "0.1.0"
+description = "Market Briefing Agent의 일일 브리핑 기록을 Claude에서 조회·분석하는 읽기 전용 MCP 서버"
+requires-python = ">=3.11"
+dependencies = ["mcp>=2.3,<3", "requests>=2.32", "python-dotenv>=1.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "anyio>=4"]
+
+[project.scripts]
+briefing-log-mcp = "briefing_mcp.server:main"
+
+[tool.setuptools]
+packages = ["briefing_mcp"]
+
+[tool.setuptools.package-data]
+briefing_mcp = ["schema.sql"]

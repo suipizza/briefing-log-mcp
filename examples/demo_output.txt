@@ -1,0 +1,22 @@
+tools: ['recent_briefings', 'state_summary', 'etf_flow_streaks', 'query_sql']
+
+## state_summary {}
+{"state": "혼조", "days": 5, "avg_btc_chg_pct": -0.63, "avg_oi_chg_pct": -0.23, "avg_etf_flow_musd": -209.4, "weak_risk_days": 2}
+{"state": "롱 청산 하락(투매)", "days": 3, "avg_btc_chg_pct": -4.26, "avg_oi_chg_pct": -1.75, "avg_etf_flow_musd": -309.2, "weak_risk_days": 3}
+{"state": "숏 청산 상승", "days": 2, "avg_btc_chg_pct": 2.46, "avg_oi_chg_pct": -2.13, "avg_etf_flow_musd": -284.3, "weak_risk_days": 1}
+{"state": "신규 롱 주도 상승", "days": 1, "avg_btc_chg_pct": 0.67, "avg_oi_chg_pct": 3.14, "avg_etf_flow_musd": -201.1, "weak_risk_days": 0}
+{"state": "신규 숏 주도 하락", "days": 1, "avg_btc_chg_pct": -3.46, "avg_oi_chg_pct": 4.68, "avg_etf_flow_musd": null, "weak_risk_days": 1}
+
+## etf_flow_streaks {}
+{"dir": "유출", "start": "2026-10-23", "end": "2026-10-24", "days": 2, "total_musd": -773.4}
+{"dir": "유입", "start": "2026-10-30", "end": "2026-10-30", "days": 1, "total_musd": 17.1}
+{"dir": "유출", "start": "2026-11-02", "end": "2026-11-04", "days": 3, "total_musd": -1157.5}
+{"dir": "유입", "start": "2026-11-05", "end": "2026-11-05", "days": 1, "total_musd": 74.6}
+{"dir": "유출", "start": "2026-11-10", "end": "2026-11-12", "days": 3, "total_musd": -596.0}
+
+## query_sql {"sql": "SELECT date, us10y_chg_1d_bp, btc_chg_24h_pct, cvd_oi_tag FROM briefings WHERE us10y_chg_1d_bp >= 10 ORDER BY date"}
+{"date": "2026-11-11", "us10y_chg_1d_bp": 11.9, "btc_chg_24h_pct": -2.08, "cvd_oi_tag": "혼조"}
+{"date": "2026-11-13", "us10y_chg_1d_bp": 10.5, "btc_chg_24h_pct": -3.46, "cvd_oi_tag": "신규 숏 주도 하락"}
+
+## query_sql {"sql": "DELETE FROM briefings"}
+거절: Error executing tool query_sql: 쿼리 거절: SELECT 또는 WITH로 시작하는 조회만 허용됩니다.
