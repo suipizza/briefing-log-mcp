@@ -1,21 +1,30 @@
 # Briefing Log MCP
 
-[Market Briefing Agent](https://github.com/suipizza/market-briefing-agent)가 매일 노션에 쌓는 마켓 브리핑 기록을 **Claude에서 바로 조회·분석할 수 있게 여는 읽기 전용 MCP 서버**.
+[Market Briefing Agent](https://github.com/suipizza/market-briefing-agent)가 쌓은 브리핑 기록을 Claude가 SQL로 조회하는 읽기 전용 MCP 서버
 
-노션 DB → SQLite로 옮기고, MCP 서버가 그 위에 SQL 기반 도구 4개를 연다. Claude Desktop이나 Claude Code에 연결하면 "지난주 롱 청산 하락이 나온 날 ETF 수급은 어땠어?" 같은 질문을 Claude가 도구를 호출해서 답한다.
+**포트폴리오**: [suipizza.github.io/projects/briefing.html](https://suipizza.github.io/projects/briefing.html) (마켓 브리핑 에이전트와 한 프로젝트로 소개)
 
-## 왜 만들었나
+| 기간 | 형태 | 기술 |
+|---|---|---|
+| 2026.11 | 1인, Market Briefing Agent 확장 | Python, SQLite, MCP Python SDK, Notion API |
 
-브리핑 에이전트는 매일 한 페이지씩 기록을 남기지만, 기록이 쌓일수록 "어떤 시장 상태가 며칠 있었는지", "ETF 순유출이 며칠 이어졌는지"를 다시 보려면 노션을 일일이 열어야 했다. 기록을 SQL로 다룰 수 있게 정리하고, 그 SQL을 Claude가 안전하게 쓸 수 있도록 MCP로 감쌌다.
+## 문제
 
-## 구조
+- 브리핑 에이전트가 매일 한 페이지씩 기록을 남기지만, 기록이 쌓일수록 "어떤 시장 상태가 며칠 있었는지", "ETF 순유출이 며칠 이어졌는지"를 보려면 노션 페이지를 일일이 열어야 하는 불편함
+- 기록을 SQL로 다룰 수 있게 정리하고, 그 SQL을 Claude가 안전하게 쓰도록 MCP로 연결
 
-```mermaid
-flowchart LR
-    N["노션 DB<br/>Market Direction Log"] -- "sync_notion.py<br/>(조회 API만)" --> S["SQLite<br/>briefings 테이블"]
-    S -- "읽기 전용 연결" --> M["MCP 서버<br/>briefing-log"]
-    M -- "stdio" --> C["Claude Desktop<br/>Claude Code"]
-```
+## 설계와 구현
+
+- 노션 기록을 SQLite 테이블과 뷰로 동기화 (노션은 조회 API만 호출)
+- 자주 쓰는 분석은 SQL 도구로 정의: GROUP BY 조건부 집계, 윈도 함수로 ETF 연속 유입·유출 구간 계산
+- 나머지 질문은 Claude가 직접 SELECT를 작성하는 조회 도구로 제공, 스키마는 리소스로 공개
+- 읽기 전용 연결, query_only, SQLite authorizer로 쓰기 동작 3중 차단
+
+<img src="docs/flow.png" alt="브리핑 에이전트와 MCP 서버 전체 흐름 (아래 단이 이 저장소)" width="820">
+
+*전체 흐름. 아래 단이 이 저장소*
+
+## 도구
 
 | 도구 / 리소스 | 하는 일 | SQL 포인트 |
 |---|---|---|
